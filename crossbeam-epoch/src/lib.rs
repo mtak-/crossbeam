@@ -59,6 +59,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "nightly", feature(const_fn))]
 #![cfg_attr(feature = "nightly", feature(cfg_target_has_atomic))]
+#![cfg_attr(feature = "nightly", feature(optin_builtin_traits))]
 
 #[macro_use]
 extern crate cfg_if;
@@ -107,5 +108,13 @@ cfg_if! {
 
         mod default;
         pub use self::default::{default_collector, is_pinned, pin};
+    }
+}
+
+cfg_if! {
+    if #[cfg(all(feature = "nightly", any(feature = "alloc", feature = "std")))] {
+        mod inline;
+
+        pub use self::inline::{Freeze, Inline, Snapshot};
     }
 }
